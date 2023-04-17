@@ -16,7 +16,6 @@ class Card_item extends StatefulWidget{
 class _Card_itemState extends State<Card_item> {
   @override
   void initState() {
-    print(widget.image);
     super.initState();
   }
   @override

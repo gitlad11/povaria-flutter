@@ -24,9 +24,21 @@ class _Recipe_viewState extends State<Recipe_view> {
     history ??= [];
     var object = Provider.of<Recipe_store>(context, listen: false).recipe;
     var link = Provider.of<Recipe_store>(context, listen: false).url;
-    String shared = '{ --name-- : --${object['name']}--, --image-- : --${object['image']}--, --link-- : --$link-- }';
+    String shared = '{ --name-- : --${object['name']}--, --image-- : --${object['image']}--, --link-- : --$link--, --time-- : --${object['time']}-- }';
     history?.add(shared);
     await prefs.setStringList('history', history!);
+  }
+
+  saveFavory() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    ///prefs.remove('history');
+    List<String>? favorite = prefs.getStringList('favorite');
+    favorite ??= [];
+    var object = Provider.of<Recipe_store>(context, listen: false).recipe;
+    var link = Provider.of<Recipe_store>(context, listen: false).url;
+    String shared = '{ --name-- : --${object['name']}--, --image-- : --${object['image']}--, --link-- : --$link--, --time-- : --${object['time']}-- }';
+    favorite?.add(shared);
+    await prefs.setStringList('history', favorite!);
   }
 
   getData() async {
@@ -143,10 +155,13 @@ class _Recipe_viewState extends State<Recipe_view> {
                                                 MediaQuery.of(context).size.height - 215,
                             width: MediaQuery.of(context).size.width,
                             padding: const EdgeInsets.only(left: 8, right: 8),
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(23),
-                              boxShadow: const [
+                              borderRadius:  BorderRadius.only(
+                                topLeft: Radius.circular(30.0),
+                                topRight: Radius.circular(30.0),
+                              ),
+                              boxShadow:  [
                                 BoxShadow(
                                   color: Colors.black54,
                                   spreadRadius: 2,
@@ -163,7 +178,7 @@ class _Recipe_viewState extends State<Recipe_view> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.timelapse, color: Colors.black54),SizedBox(width: 4),
+                                    Icon(Icons.timelapse, color: Colors.black54), SizedBox(width: 4),
                                     Text(recipe.recipe['time'],style: time_style)
                                   ],
                                 ),
@@ -242,10 +257,10 @@ class _Recipe_viewState extends State<Recipe_view> {
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
-                                                  Text(recipe.recipe['ingrid'][index]['name'] , style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500, color: Colors.white)),
+                                                  Text(recipe.recipe['ingrid'][index]['name'].trim() , style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500, color: Colors.white)),
                                                   const Spacer(),
-                                                  Text(recipe.recipe['ingrid'][index]['count'] + ' ', style: TextStyle(fontSize: 16,color: Colors.white, fontWeight: FontWeight.w400)),
-                                                  Text(recipe.recipe['ingrid'][index]['unit'], style: TextStyle(fontSize: 16,color: Colors.white, fontWeight: FontWeight.w400)),
+                                                  Text(recipe.recipe['ingrid'][index]['count'].trim() + ' ', style: TextStyle(fontSize: 16,color: Colors.white, fontWeight: FontWeight.w400)),
+                                                  Text(recipe.recipe['ingrid'][index]['unit'].trim(), style: TextStyle(fontSize: 16,color: Colors.white, fontWeight: FontWeight.w400)),
                                                 ],
                                               ),
                                             );
@@ -328,7 +343,8 @@ class _Recipe_viewState extends State<Recipe_view> {
                       Positioned(
                         top: 30,
                         right: 10,
-                        child: IconButton(onPressed: (){}, icon: Icon(
+                        child: IconButton(onPressed: saveFavory,
+                            icon: Icon(
                           Icons.favorite_border,
                           size: 32,
                           shadows: <Shadow>[Shadow(color: Colors.black, blurRadius: 15.0)],

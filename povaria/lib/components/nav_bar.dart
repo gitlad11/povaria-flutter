@@ -15,7 +15,7 @@ class _Navbar_state extends State<Navbar> {
   Widget build(BuildContext context) {
     return Container(
       height: 52,
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 10,bottom: 10),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 6,bottom: 10),
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

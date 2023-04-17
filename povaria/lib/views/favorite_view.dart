@@ -1,31 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:povaria/components/nav_bar.dart';
 import 'package:povaria/views/recipe_view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../components/item_card.dart';
+import '../components/nav_bar.dart';
 import '../store/recipe.dart';
 
-class History_view extends StatefulWidget{
-  History_view({super.key});
-
+class Favorite_view extends StatefulWidget{
   @override
-  State<History_view> createState() => _History_viewState();
+  State<Favorite_view> createState() => _Favorite_viewState();
 }
 
-class _History_viewState extends State<History_view> {
+class _Favorite_viewState extends State<Favorite_view> {
   bool loading = false;
   List items = [];
 
-  deleteHistory() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('history');
-    prefs.setStringList('history', []);
-    setState(() {
-      items = [];
-    });
-  }
   parseString(String s) async {
     var values = s.split('--');
     Map object = {};
@@ -59,12 +49,6 @@ class _History_viewState extends State<History_view> {
   }
 
   @override
-  void initState() {
-    initDate();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -74,10 +58,7 @@ class _History_viewState extends State<History_view> {
         child: Column(
           children: [
             const SizedBox(height: 24),
-            Navbar(title: 'История', btns: IconButton(
-              onPressed: deleteHistory,
-              icon: const Icon(Icons.delete, size: 28, color: Colors.black54),
-            )),
+            Navbar(title: 'История',btns: Container()),
             Container(
               height: MediaQuery.of(context).size.height - 86,
               width: MediaQuery.of(context).size.width,
@@ -91,13 +72,13 @@ class _History_viewState extends State<History_view> {
                       child: InkWell(
                         onTap: (){ selectItem(items[index]['link']); },
                         child: Card_item(title: items[index]['name'],
-                                         image: items[index]['image'],
-                                         time: items[index]['time']
-                                      ),
+                                    image: items[index]['image'],
+                                    time: items[index]['time']
+                                  ),
                       ),
                     );
                   }),
-            ),
+              ),
           ],
         ),
       ),
