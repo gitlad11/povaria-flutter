@@ -6,6 +6,7 @@ import 'package:povaria/components/catalogs.dart';
 import 'package:povaria/components/current_list.dart';
 import 'package:povaria/store/catalog.dart';
 import 'package:povaria/store/recipe.dart';
+import 'package:povaria/views/favorite_view.dart';
 import 'package:povaria/views/history_view.dart';
 import 'package:povaria/views/recipe_view.dart';
 import 'package:provider/provider.dart';
@@ -94,7 +95,7 @@ class _Main_viewState extends State<Main_view> {
   onFavorite(){
     Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => History_view()));
+        MaterialPageRoute(builder: (context) => Favorite_view()));
   }
 
   void initState(){

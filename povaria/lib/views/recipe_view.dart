@@ -15,7 +15,42 @@ class Recipe_view extends StatefulWidget{
 class _Recipe_viewState extends State<Recipe_view> {
   bool loading = true;
   bool full_screen = false;
+  bool in_favorite = false;
   late ScrollController controller;
+
+  parseString(String s) async {
+    var values = s.split('--');
+    Map object = {};
+    int index = 0;
+    for(var val in values){
+      if(val == ' : '){
+        object[values[index - 1]] = values[index + 1];
+      }
+      index = index + 1;
+    }
+    return object;
+  }
+
+  initDate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? data = await prefs.getStringList('favorite');
+    var items = [];
+    for(var item in data!){
+      var i = await parseString(item);
+      items.add(i);
+    }
+    for(var item in items){
+      if(item['name'].trim() == Provider.of<Recipe_store>(context, listen: false).recipe['name'].trim()){
+        setState(() => {
+          in_favorite = true
+        });
+      }
+    }
+  }
+
+  checkFavorite(){
+
+  }
 
   saveHistory() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -30,6 +65,7 @@ class _Recipe_viewState extends State<Recipe_view> {
   }
 
   saveFavory() async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     ///prefs.remove('history');
     List<String>? favorite = prefs.getStringList('favorite');
@@ -38,7 +74,10 @@ class _Recipe_viewState extends State<Recipe_view> {
     var link = Provider.of<Recipe_store>(context, listen: false).url;
     String shared = '{ --name-- : --${object['name']}--, --image-- : --${object['image']}--, --link-- : --$link--, --time-- : --${object['time']}-- }';
     favorite?.add(shared);
-    await prefs.setStringList('history', favorite!);
+    await prefs.setStringList('favorite', favorite!);
+    setState(() {
+      in_favorite = true;
+    });
   }
 
   getData() async {
@@ -109,6 +148,7 @@ class _Recipe_viewState extends State<Recipe_view> {
   void initData() async {
     await getData();
     await saveHistory();
+    await initDate();
   }
 
   @override
@@ -292,7 +332,7 @@ class _Recipe_viewState extends State<Recipe_view> {
                                                     ),
                                                     color: Colors.white
                                                   ),
-                                                  child: Text(index.toString(), style: TextStyle(fontSize: 20,color: Colors.black87, fontWeight: FontWeight.w500)),
+                                                  child: Text(index.toString(), style: const TextStyle(fontSize: 20,color: Colors.black87, fontWeight: FontWeight.w500)),
                                                 ),
                                                 Container(
                                                   clipBehavior: Clip.hardEdge,
@@ -340,7 +380,7 @@ class _Recipe_viewState extends State<Recipe_view> {
                           color: Colors.white,)
                         ),
                       ),
-                      Positioned(
+                      !in_favorite ? Positioned(
                         top: 30,
                         right: 10,
                         child: IconButton(onPressed: saveFavory,
@@ -349,6 +389,16 @@ class _Recipe_viewState extends State<Recipe_view> {
                           size: 32,
                           shadows: <Shadow>[Shadow(color: Colors.black, blurRadius: 15.0)],
                           color: Colors.white,)
+                        ),
+                      ) : Positioned(
+                        top: 30,
+                        right: 10,
+                        child: IconButton(onPressed: (){},
+                            icon: Icon(
+                              Icons.favorite,
+                              size: 32,
+                              shadows: <Shadow>[Shadow(color: Colors.black, blurRadius: 15.0)],
+                              color: Colors.red)
                         ),
                       ),
                     ]

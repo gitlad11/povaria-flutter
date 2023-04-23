@@ -31,12 +31,14 @@ class _Favorite_viewState extends State<Favorite_view> {
 
   initDate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? data = prefs.getStringList('history');
+    List<String>? data = prefs.getStringList('favorite');
     var it = [];
     for(var item in data!){
       var i = await parseString(item);
       it.add(i);
     }
+    print(data);
+    print(it);
     setState(() {
       items = it;
     });
@@ -46,6 +48,11 @@ class _Favorite_viewState extends State<Favorite_view> {
     Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Recipe_view()));
+  }
+  @override
+  void initState() {
+    initDate();
+    super.initState();
   }
 
   @override
@@ -58,7 +65,7 @@ class _Favorite_viewState extends State<Favorite_view> {
         child: Column(
           children: [
             const SizedBox(height: 24),
-            Navbar(title: 'История',btns: Container()),
+            Navbar(title: 'Избранное',btns: Container()),
             Container(
               height: MediaQuery.of(context).size.height - 86,
               width: MediaQuery.of(context).size.width,
