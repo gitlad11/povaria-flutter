@@ -8,6 +8,7 @@ get_request(url) async {
   var result = await http.Client().get(Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Access-Control-Allow-Origin': '*'
       });
   return result;
 }
